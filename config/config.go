@@ -2,22 +2,31 @@ package config
 
 import (
 	"log"
+	"time"
 
 	"github.com/jinzhu/configor"
 )
 
+// Configuration implements all config data
+type Configuration struct {
+	Command struct {
+		Prefix string `required:"true"`
+	}
+	Whatsapp struct {
+		TimeOutDuration time.Duration `default:"5"`
+		SessionPath     string        `default:"./session"`
+	}
+	Qrcode struct {
+		FileName    string `default:"./session"`
+		Quality     string `default:"medium"`
+		Size        uint   `default:"256"`
+		GeneratePNG bool   `default:"true"`
+		PrintOnCLI  bool   `default:"true"`
+	}
+}
+
 // Get configs
 var Get = loadConfig()
-
-// Command store the commands data
-type Command struct {
-	Prefix string `required:"true"`
-}
-
-// Configuration implements all configurations
-type Configuration struct {
-	Command Command
-}
 
 func loadConfig() Configuration {
 	var conf Configuration

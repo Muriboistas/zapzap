@@ -1,3 +1,4 @@
+github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f h1:2dk3eOnYllh+wUOuDhOoC2vUVoJF/5z478ryJ+wzEII=
 github.com/Baozisoftware/qrcode-terminal-go v0.0.0-20170407111555-c0650d8dff0f/go.mod h1:4a58ifQTEe2uwwsaqbh3i2un5/CBPg+At/qHpt18Tmk=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
@@ -16,10 +17,13 @@ github.com/gorilla/websocket v1.4.1 h1:q7AeDBpnBk8AogcD4DSag/Ukw/KV+YhzLj2bP5HvK
 github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/jinzhu/configor v1.2.1 h1:OKk9dsR8i6HPOCZR8BcMtcEImAFjIhbJFZNyn5GCZko=
 github.com/jinzhu/configor v1.2.1/go.mod h1:nX89/MOmDba7ZX7GCyU/VIaQ2Ar2aizBl2d3JLF/rDc=
+github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
 github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcnceauSikq3lYCQ=
+github.com/mattn/go-isatty v0.0.5 h1:tHXDdz1cpzGaovsTB+TVB8q90WEokoVmfMqoVcrLUgw=
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/skip2/go-qrcode v0.0.0-20190110000554-dc11ecdae0a9 h1:lpEzuenPuO1XNTeikEmvqYFcU37GVLl8SRNblzyvGBE=
 github.com/skip2/go-qrcode v0.0.0-20190110000554-dc11ecdae0a9/go.mod h1:PLPIyL7ikehBD1OAjmKKiOEhbvWyHGaNDjquXMcYABo=
 golang.org/x/crypto v0.0.0-20190131182504-b8fe1690c613/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=

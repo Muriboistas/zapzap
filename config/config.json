@@ -1,5 +1,16 @@
 {
-  "command": {
-    "prefix": "!"
+  "Command": {
+    "Prefix": "!"
+  },
+  "Whatsapp": {
+    "TimeOutDuration": 5,
+    "SessionPath": "./session"
+  },
+  "Qrcode": {
+    "FileName": "./session",
+    "Quality": "medium",
+    "Size": 256,
+    "GeneratePNG": true,
+    "PrintOnCLI": false
   }
 }
