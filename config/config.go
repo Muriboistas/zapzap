@@ -15,6 +15,9 @@ type Configuration struct {
 	Whatsapp struct {
 		TimeOutDuration time.Duration `default:"5"`
 		SessionPath     string        `default:"./session"`
+		LongClientName  string        `default:"Muriboistas"`
+		ShortClientName string        `default:"Muriboistas"`
+		ClientVersion   string        `default:"1.0"`
 	}
 	Qrcode struct {
 		FileName    string `default:"./session"`

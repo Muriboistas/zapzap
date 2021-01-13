@@ -2,7 +2,10 @@ package whats
 
 import (
 	"encoding/gob"
+	"errors"
+	"log"
 	"os"
+
 	"time"
 
 	cfg "github.com/muriboistas/zapzap/config"
@@ -15,18 +18,42 @@ var config = cfg.Get
 
 // New create a new whatsapp connection
 func New() (*whatsapp.Conn, error) {
+	//create new WhatsApp connection
 	wac, err := whatsapp.NewConn(config.Whatsapp.TimeOutDuration * time.Second)
 	if err != nil {
 		return nil, err
 	}
 
+	// Set client configs
+	wac.SetClientName(config.Whatsapp.LongClientName, config.Whatsapp.ShortClientName, config.Whatsapp.ClientVersion)
+	wac.SetClientVersion(2, 2021, 4)
+
+	//Add handler
+	wac.AddHandler(&waHandler{wac})
+
+	// make the connection
+	err = login(wac)
+	if err != nil {
+		log.Println(err)
+	}
+
+	//verifies phone connectivity
+	pong, err := wac.AdminTest()
+	if !pong || err != nil {
+		return nil, errors.New("error pinging in")
+	}
+
+	return wac, nil
+}
+
+func login(wac *whatsapp.Conn) error {
 	//load saved session
 	session, err := readSession()
 	if err == nil {
 		//restore session
 		session, err = wac.RestoreWithSession(session)
 		if err == nil {
-			return wac, nil
+			return nil
 		}
 	}
 	// if no saved session or failed restoration create it
@@ -43,17 +70,17 @@ func New() (*whatsapp.Conn, error) {
 		}()
 		session, err = wac.Login(qr)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	//save session
 	err = writeSession(session)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return wac, nil
+	return nil
 }
 
 func readSession() (whatsapp.Session, error) {
