@@ -8,7 +8,7 @@ import (
 	whatsapp "github.com/Rhymen/go-whatsapp"
 
 	"github.com/muriboistas/zapzap/config"
-	"github.com/muriboistas/zapzap/infra/whats"
+	"github.com/muriboistas/zapzap/infra/whats/message"
 )
 
 // ActiveCommands the current avaliable commands
@@ -29,10 +29,12 @@ type Command struct {
 	Exec func(*whatsapp.Conn, whatsapp.TextMessage)
 }
 
-func parseCommand(wac *whatsapp.Conn, message whatsapp.TextMessage) {
+// ParseCommand analyze the command
+// FIXME: add error definitions
+func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 	config := config.Get.Command
 	// split the message by spaces
-	msgArgs := strings.Fields(message.Text)
+	msgArgs := strings.Fields(msg.Text)
 	if len(msgArgs) < 1 {
 		return
 	}
@@ -44,15 +46,14 @@ func parseCommand(wac *whatsapp.Conn, message whatsapp.TextMessage) {
 		return
 	}
 
-	// FIXME: Re do getRemoteJID
-	// get sender info
-	info, err := whats.GetRemoteJidInfo(message.Info.RemoteJid)
-	if err != nil {
+	// get the message sender number
+	num := message.GetSenderNumber(msg)
+	if num == "" {
 		return
 	}
 
 	// verify if has cooldown
-	cooldownID := info["number"] + command.Name
+	cooldownID := num + command.Name
 	if cd, found := WaitList[cooldownID]; found && !time.Now().After(cd) {
 		return
 	}
@@ -62,11 +63,11 @@ func parseCommand(wac *whatsapp.Conn, message whatsapp.TextMessage) {
 	}
 
 	// verify if message is root only and check it
-	if command.RootOnly && !message.Info.FromMe {
+	if command.RootOnly && !msg.Info.FromMe {
 		return
 	}
 
-	command.Exec(wac, message)
+	command.Exec(wac, msg)
 }
 
 // New creates a new command

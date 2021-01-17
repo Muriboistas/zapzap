@@ -14,36 +14,47 @@ import (
 	"github.com/Rhymen/go-whatsapp"
 )
 
-var config = cfg.Get
+// Wac the whatsapp connection
+var waConn *whatsapp.Conn
+
+var config = &cfg.Get
 
 // New create a new whatsapp connection
-func New() (*whatsapp.Conn, error) {
+func New() error {
 	//create new WhatsApp connection
-	wac, err := whatsapp.NewConn(config.Whatsapp.TimeOutDuration * time.Second)
+	var err error
+	waConn, err = whatsapp.NewConn(config.Whatsapp.TimeOutDuration * time.Second)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Set client configs
-	wac.SetClientName(config.Whatsapp.LongClientName, config.Whatsapp.ShortClientName, config.Whatsapp.ClientVersion)
-	wac.SetClientVersion(2, 2021, 4)
+	waConn.SetClientName(config.Whatsapp.LongClientName, config.Whatsapp.ShortClientName, config.Whatsapp.ClientVersion)
+	waConn.SetClientVersion(2, 2021, 4)
 
 	//Add handler
-	wac.AddHandler(&waHandler{wac})
+	waConn.AddHandler(&waHandler{waConn})
 
 	// make the connection
-	err = login(wac)
+	err = login(waConn)
 	if err != nil {
 		log.Println(err)
 	}
 
 	//verifies phone connectivity
-	pong, err := wac.AdminTest()
+	pong, err := waConn.AdminTest()
 	if !pong || err != nil {
-		return nil, errors.New("error pinging in")
+		return errors.New("error pinging in")
 	}
 
-	return wac, nil
+	return nil
+}
+
+// Disconnect safely disconnect whatsapp connection
+func Disconnect() error {
+	_, err := waConn.Disconnect()
+
+	return err
 }
 
 func login(wac *whatsapp.Conn) error {
