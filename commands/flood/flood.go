@@ -23,7 +23,7 @@ func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 		for i := 0; i <= times+7; i++ {
 			select {
 			case <-ticker.C:
-				message.Reply(msg.Text, wac, msg)
+				message.Send(msg.Text, wac, msg)
 			case <-quit:
 				ticker.Stop()
 				return

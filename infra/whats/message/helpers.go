@@ -3,8 +3,6 @@ package message
 import (
 	"regexp"
 
-	"github.com/muriboistas/zapzap/config"
-
 	"github.com/Rhymen/go-whatsapp"
 )
 
@@ -20,6 +18,27 @@ const (
 	// NewContactMessage received new contact private message identifier
 	NewContactMessage = "c.us"
 )
+
+// GetRemoteJID get it
+func GetRemoteJID(msg whatsapp.TextMessage) string {
+	return msg.Info.RemoteJid
+}
+
+// GetSenderJID is used to get the JId
+func GetSenderJID(msg whatsapp.TextMessage) string {
+	msgIdentifier, senderJID := GetRemoteIdentifier(msg.Info.RemoteJid), ""
+	switch msgIdentifier {
+	case PrivateMessage:
+		senderJID = msg.Info.RemoteJid
+	case GroupMessage:
+		if msg.Info.FromMe {
+			return ""
+		}
+		senderJID = msg.Info.Source.GetParticipant()
+	}
+
+	return senderJID
+}
 
 // GetRemoteHost get the message host ex 629731239383
 func GetRemoteHost(remoteJID string) string {
@@ -41,23 +60,7 @@ func GetRemoteIdentifier(remoteJID string) string {
 	return ""
 }
 
-// GetRemoteJID get it
-func GetRemoteJID(msg whatsapp.TextMessage) string {
-	return msg.Info.RemoteJid
-}
-
 // GetSenderNumber get sender info based on messsage
 func GetSenderNumber(msg whatsapp.TextMessage) string {
-	msgIdentifier, senderNum := GetRemoteIdentifier(msg.Info.RemoteJid), ""
-	switch msgIdentifier {
-	case PrivateMessage:
-		senderNum = GetRemoteHost(msg.Info.RemoteJid)
-	case GroupMessage:
-		if msg.Info.FromMe {
-			return config.Get.Whatsapp.SourceNumber
-		}
-		senderNum = GetRemoteHost(msg.Info.Source.GetParticipant())
-	}
-
-	return senderNum
+	return GetRemoteHost(GetSenderJID(msg))
 }
