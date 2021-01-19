@@ -67,6 +67,9 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 		return
 	}
 
+	// trim command from message
+	msg.Text = strings.TrimPrefix(msg.Text, msgArgs[0]+" ")
+
 	command.Exec(wac, msg)
 }
 
