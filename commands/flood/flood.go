@@ -19,6 +19,7 @@ func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 	times := rand.Intn(5)
 	ticker := time.NewTicker(1 * time.Second)
 	quit := make(chan struct{})
+	message.Reply(msg.Text, wac, msg)
 	go func() {
 		for i := 0; i <= times+7; i++ {
 			select {
