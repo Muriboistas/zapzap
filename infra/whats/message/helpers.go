@@ -21,6 +21,26 @@ const (
 	NewContactMessage = "c.us"
 )
 
+// GetRemoteHost get the message host ex 629731239383
+func GetRemoteHost(remoteJID string) string {
+	if remoteJid.MatchString(remoteJID) {
+		data := remoteJid.FindStringSubmatch(remoteJID)
+		return data[1]
+	}
+
+	return ""
+}
+
+// GetRemoteIdentifier get the message identifier ex: group message, private message...
+func GetRemoteIdentifier(remoteJID string) string {
+	if remoteJid.MatchString(remoteJID) {
+		data := remoteJid.FindStringSubmatch(remoteJID)
+		return data[2]
+	}
+
+	return ""
+}
+
 // GetRemoteJID get it
 func GetRemoteJID(msg whatsapp.TextMessage) string {
 	return msg.Info.RemoteJid
@@ -28,25 +48,16 @@ func GetRemoteJID(msg whatsapp.TextMessage) string {
 
 // GetSenderNumber get sender info based on messsage
 func GetSenderNumber(msg whatsapp.TextMessage) string {
-	remoteJID := msg.Info.RemoteJid
-	if remoteJid.MatchString(remoteJID) {
-		var senderNum string
-		data := remoteJid.FindStringSubmatch(remoteJID)
-		msgType := data[2]
-		switch msgType {
-		case PrivateMessage:
-			senderNum = data[1]
-		case GroupMessage:
-			if msg.Info.FromMe {
-				return config.Get.Whatsapp.SourceNumber
-			}
-			data = remoteJid.FindStringSubmatch(msg.Info.Source.GetParticipant())
-			senderNum = data[1]
-		default:
-			return ""
+	msgIdentifier, senderNum := GetRemoteIdentifier(msg.Info.RemoteJid), ""
+	switch msgIdentifier {
+	case PrivateMessage:
+		senderNum = GetRemoteHost(msg.Info.RemoteJid)
+	case GroupMessage:
+		if msg.Info.FromMe {
+			return config.Get.Whatsapp.SourceNumber
 		}
-		return senderNum
+		senderNum = GetRemoteHost(msg.Info.Source.GetParticipant())
 	}
 
-	return ""
+	return senderNum
 }
