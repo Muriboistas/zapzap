@@ -62,8 +62,8 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 		WaitList[cooldownID] = time.Now().Add(command.Cooldown)
 	}
 
-	// verify if message is root only and check it
-	if command.RootOnly && !msg.Info.FromMe {
+	// verify if the message sender have the permitions
+	if !HavePermitions(command, msg) {
 		return
 	}
 
@@ -71,6 +71,16 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 	msg.Text = strings.TrimPrefix(msg.Text, msgArgs[0]+" ")
 
 	command.Exec(wac, msg)
+}
+
+// HavePermitions Check if the participant have the permitions to use some command
+func HavePermitions(command Command, msg whatsapp.TextMessage) bool {
+	// if command is root only
+	if command.RootOnly && !msg.Info.FromMe {
+		return false
+	}
+
+	return true
 }
 
 // New creates a new command

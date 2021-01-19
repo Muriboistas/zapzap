@@ -37,7 +37,9 @@ func getHelpDescription(msg whatsapp.TextMessage) string {
 	// list all commands
 	commandList := make([]string, 0)
 	for _, cmd := range commands.ActiveCommands {
-		commandList = append(commandList, cmd.Name)
+		if commands.HavePermitions(cmd, msg) {
+			commandList = append(commandList, cmd.Name)
+		}
 	}
 
 	return fmt.Sprintf("*Commands:*\n```%s```", strings.Join(commandList, "```, ```"))
