@@ -16,8 +16,7 @@ func Reply(text string, wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
 				Conversation: &msg.Text,
 			},
 			QuotedMessageID: msg.Info.Id,
-			// Participant:     msg.Info.Source.GetParticipant(),
-			Participant: GetSenderJID(msg),
+			Participant:     GetSenderJID(msg),
 		},
 		Text: text,
 	}
