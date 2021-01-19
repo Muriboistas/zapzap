@@ -1,9 +1,10 @@
 package whats
 
 import (
-	"fmt"
 	"strings"
 	"time"
+
+	"github.com/muriboistas/zapzap/commands"
 
 	"github.com/Rhymen/go-whatsapp"
 )
@@ -23,12 +24,7 @@ func (*waHandler) HandleTextMessage(msg whatsapp.TextMessage) {
 	msgTime := time.Unix(int64(msg.Info.Timestamp), 0)
 	if startedAt.Before(msgTime) {
 		if strings.HasPrefix(msg.Text, config.Command.Prefix) {
-			// commands.ParseCommand(waConn, message)
-			fmt.Println(msg)
-			fmt.Println("SOURCE:", msg.Info.Source.GetParticipant())
-			fmt.Println("SOURCE:", msg.Info.Source.String())
-			fmt.Println("SOURCE:", msg.Info.Source.GetBroadcast())
-			// fmt.Println(helpers.GetSenderNumber(message))
+			commands.ParseCommand(waConn, msg)
 		}
 	}
 }
