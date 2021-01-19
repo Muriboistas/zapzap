@@ -1,7 +1,6 @@
 package flood
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -16,7 +15,6 @@ func init() {
 }
 
 func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
-	fmt.Println(msg.Info.Source.String())
 	rand.Seed(time.Now().UnixNano())
 	times := rand.Intn(5)
 	ticker := time.NewTicker(1 * time.Second)
