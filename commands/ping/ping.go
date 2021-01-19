@@ -1,11 +1,8 @@
 package ping
 
 import (
-	"fmt"
-
 	"github.com/muriboistas/zapzap/commands"
 
-	"github.com/muriboistas/zapzap/config"
 	"github.com/muriboistas/zapzap/infra/whats/message"
 
 	whatsapp "github.com/Rhymen/go-whatsapp"
@@ -16,6 +13,5 @@ func init() {
 }
 
 func ping(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
-	fmt.Println(config.Get.Whatsapp.SourceNumber)
 	message.Reply("Pong", wac, msg)
 }
