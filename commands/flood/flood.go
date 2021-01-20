@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(2).Add()
+	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(5).Add()
 }
 
 func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
