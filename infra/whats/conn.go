@@ -64,6 +64,7 @@ func login(wac *whatsapp.Conn) error {
 		//restore session
 		session, err = wac.RestoreWithSession(session)
 		if err == nil {
+			config.Whatsapp.RootNumber = session.Wid
 			return nil
 		}
 	}
@@ -91,6 +92,7 @@ func login(wac *whatsapp.Conn) error {
 		return err
 	}
 
+	config.Whatsapp.RootNumber = session.Wid
 	return nil
 }
 

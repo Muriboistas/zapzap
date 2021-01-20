@@ -18,7 +18,7 @@ type Configuration struct {
 		LongClientName  string        `default:"Muriboistas"`
 		ShortClientName string        `default:"Muriboistas"`
 		ClientVersion   string        `default:"1.0"`
-		SourceNumber    string        `required:"true"`
+		RootNumber      string
 	}
 	Qrcode struct {
 		FileName    string `default:"./session"`

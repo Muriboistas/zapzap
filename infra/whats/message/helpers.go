@@ -1,7 +1,10 @@
 package message
 
 import (
+	"fmt"
 	"regexp"
+
+	"github.com/muriboistas/zapzap/config"
 
 	"github.com/Rhymen/go-whatsapp"
 )
@@ -15,8 +18,8 @@ const (
 	GroupMessage = "g.us"
 	// BroadcastMessage received broadcasts message identifier
 	BroadcastMessage = "broadcast"
-	// NewContactMessage received new contact private message identifier
-	NewContactMessage = "c.us"
+	// ContactMessage received contact private message identifier
+	ContactMessage = "c.us"
 )
 
 // GetRemoteJID get it
@@ -32,7 +35,7 @@ func GetSenderJID(msg whatsapp.TextMessage) string {
 		senderJID = msg.Info.RemoteJid
 	case GroupMessage:
 		if msg.Info.FromMe {
-			return ""
+			return fmt.Sprintf("%s@%s", GetRemoteHost(config.Get.Whatsapp.RootNumber), PrivateMessage)
 		}
 		senderJID = msg.Info.Source.GetParticipant()
 	}

@@ -1,2 +1,1 @@
-Arrumar senderJId quando a mensagem é fromMe
 Arrumar quando o flood recebe uma mensagem mencionando algum numero
