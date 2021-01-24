@@ -26,7 +26,7 @@ type Command struct {
 
 	Cooldown time.Duration
 
-	Exec func(*whatsapp.Conn, whatsapp.TextMessage)
+	Exec func(*whatsapp.Conn, whatsapp.TextMessage) error
 }
 
 // ParseCommand analyze the command
@@ -70,7 +70,10 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 	// trim command from message
 	msg.Text = strings.TrimPrefix(msg.Text, msgArgs[0]+" ")
 
-	command.Exec(wac, msg)
+	err := command.Exec(wac, msg)
+	if err != nil {
+		message.Reply(err.Error(), wac, msg)
+	}
 }
 
 // HavePermitions Check if the participant have the permitions to use some command
@@ -84,7 +87,7 @@ func HavePermitions(command Command, msg whatsapp.TextMessage) bool {
 }
 
 // New creates a new command
-func New(name string, f func(*whatsapp.Conn, whatsapp.TextMessage)) Command {
+func New(name string, f func(*whatsapp.Conn, whatsapp.TextMessage) error) Command {
 	return Command{
 		Name: name,
 		Exec: f,

@@ -14,7 +14,7 @@ func init() {
 	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(2).Add()
 }
 
-func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
+func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
 	rand.Seed(time.Now().UnixNano())
 	times := rand.Intn(5)
 	ticker := time.NewTicker(1 * time.Second)
@@ -32,4 +32,6 @@ func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 		}
 		ticker.Stop()
 	}()
+
+	return nil
 }
