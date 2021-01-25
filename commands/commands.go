@@ -46,24 +46,9 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 		return
 	}
 
-	// get the message sender number
-	num := message.GetSenderNumber(msg)
-	if num == "" {
-		return
-	}
-
-	// verify if has cooldown
-	cooldownID := num + command.Name
-	if cd, found := WaitList[cooldownID]; found && !time.Now().After(cd) {
-		return
-	}
-	// if need cooldown add it
-	if command.Cooldown != time.Duration(0) {
-		WaitList[cooldownID] = time.Now().Add(command.Cooldown)
-	}
-
 	// verify if the message sender have the permitions
-	if !HavePermitions(command, msg) {
+	if logs := HavePermitions(command, msg); len(logs) > 0 {
+		message.Reply(strings.Join(logs, "\n"), wac, msg)
 		return
 	}
 
@@ -77,13 +62,16 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 }
 
 // HavePermitions Check if the participant have the permitions to use some command
-func HavePermitions(command Command, msg whatsapp.TextMessage) bool {
-	// if command is root only
-	if command.RootOnly && !msg.Info.FromMe {
-		return false
+func HavePermitions(command Command, msg whatsapp.TextMessage) (logs []string) {
+	if !isRoot(command, msg) {
+		logs = append(logs, "👾: Você não pode usar esse comando!")
 	}
 
-	return true
+	if isInCooldown(command, msg) {
+		logs = append(logs, "👾: Você acabou de usar esse comando espere um pouco!")
+	}
+
+	return
 }
 
 // New creates a new command
