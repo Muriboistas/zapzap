@@ -1,3 +1,6 @@
 Arrumar quando o flood recebe uma mensagem mencionando algum numero
 Make multi language help
 FIX commands error returns
+Fazer historico
+melhorar e salvar logs
+ficar verificando conexão
