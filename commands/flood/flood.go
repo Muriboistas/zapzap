@@ -11,27 +11,16 @@ import (
 )
 
 func init() {
-	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(5).Add()
+	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(8).Add()
 }
 
 func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
 	rand.Seed(time.Now().UnixNano())
 	times := rand.Intn(5)
-	ticker := time.NewTicker(1 * time.Second)
-	quit := make(chan struct{})
 	message.Reply(msg.Text, wac, msg)
-	go func() {
-		for i := 0; i <= times+7; i++ {
-			select {
-			case <-ticker.C:
-				message.Send(msg.Text, wac, msg)
-			case <-quit:
-				ticker.Stop()
-				return
-			}
-		}
-		ticker.Stop()
-	}()
+	for i := 0; i <= times+7; i++ {
+		message.Send(msg.Text, wac, msg)
+	}
 
 	return nil
 }
