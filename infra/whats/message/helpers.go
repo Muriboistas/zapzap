@@ -30,13 +30,16 @@ func GetRemoteJID(msg whatsapp.TextMessage) string {
 // GetSenderJID is used to get the JId
 func GetSenderJID(msg whatsapp.TextMessage) string {
 	msgIdentifier, senderJID := GetRemoteIdentifier(msg.Info.RemoteJid), ""
+
+	//if the sender was the host
+	if msg.Info.FromMe {
+		return fmt.Sprintf("%s@%s", GetRemoteHost(config.Get.Whatsapp.RootNumber), PrivateMessage)
+	}
+
 	switch msgIdentifier {
 	case PrivateMessage:
 		senderJID = msg.Info.RemoteJid
 	case GroupMessage:
-		if msg.Info.FromMe {
-			return fmt.Sprintf("%s@%s", GetRemoteHost(config.Get.Whatsapp.RootNumber), PrivateMessage)
-		}
 		senderJID = msg.Info.Source.GetParticipant()
 	}
 
