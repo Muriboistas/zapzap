@@ -4,4 +4,5 @@ FIX commands error returns
 Fazer historico
 melhorar e salvar logs
 ficar verificando conexão
-Arrumar cooldown 
+Adicionar comando para teste
+make json reader and writer
