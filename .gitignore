@@ -18,3 +18,5 @@
 .vscode
 session
 config.json
+data/backups
+data/*.sqlite
