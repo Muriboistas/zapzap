@@ -7,7 +7,6 @@ require (
 	github.com/Rhymen/go-whatsapp v0.1.1
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/gocolly/colly/v2 v2.1.0
-	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/google/uuid v1.2.0
 	github.com/jinzhu/configor v1.2.1
