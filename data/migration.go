@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3" // sqlite3 migration driver
+	_ "github.com/golang-migrate/migrate/v4/source/file"      // file manager
 
 	"github.com/muriboistas/zapzap/config"
 )
@@ -71,7 +71,7 @@ func backupMigration() error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/backup-%v.sqlite", config.Get.Database.Path, time.Now().UnixNano()), content, 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/backup-%v.sqlite", config.Get.Database.BackupPath, time.Now().UnixNano()), content, 0644)
 	if err != nil {
 		return err
 	}

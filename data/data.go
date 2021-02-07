@@ -14,6 +14,8 @@ import (
 
 // Service store services
 var Service = loadServices()
+
+// DB ...
 var DB *sql.DB
 
 // Services data
