@@ -3,8 +3,9 @@ package whats
 import (
 	"encoding/gob"
 	"errors"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"time"
 

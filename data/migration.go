@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3" // sqlite3 migration driver

@@ -1,10 +1,11 @@
 package config
 
 import (
-	"log"
 	"path/filepath"
 	"runtime"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/configor"
 	_ "github.com/mattn/go-sqlite3" // sqlite3 drivers

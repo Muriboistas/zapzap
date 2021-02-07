@@ -3,7 +3,8 @@ package data
 import (
 	"database/sql"
 	"fmt"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	_ "github.com/mattn/go-sqlite3" // sqlite3 drivers
 
