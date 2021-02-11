@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/muriboistas/zapzap/commands"
+	"github.com/muriboistas/zapzap/infra/whats/broadcast"
+	"github.com/muriboistas/zapzap/infra/whats/message"
 
 	"github.com/Rhymen/go-whatsapp"
 )
@@ -26,6 +28,12 @@ func (*waHandler) HandleTextMessage(msg whatsapp.TextMessage) {
 		if strings.HasPrefix(msg.Text, config.Command.Prefix) {
 			commands.ParseCommand(waConn, msg)
 		}
+	}
+
+	remoteIdentifier := message.GetRemoteIdentifier(msg.Info.RemoteJid)
+	switch remoteIdentifier {
+	case message.BroadcastMessage:
+		broadcast.Active[message.GetRemoteHost(msg.Info.RemoteJid)] = msg.Info.RemoteJid
 	}
 }
 

@@ -57,7 +57,7 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 
 	err := command.Exec(wac, msg)
 	if err != nil {
-		message.Reply(err.Error(), wac, msg)
+		message.Reply("👾: "+err.Error(), wac, msg)
 	}
 }
 

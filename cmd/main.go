@@ -39,6 +39,7 @@ func init() {
 }
 
 func main() {
+	log.Trace("Parsing flags")
 	flag.Parse()
 
 	if *migrate != "" {
