@@ -27,6 +27,7 @@ type Whatsapp struct {
 	ShortClientName string
 	ClientVersion   string
 	RootNumber      string
+	SendBDelay      time.Duration
 }
 
 // Qrcode config
@@ -65,6 +66,7 @@ var conf = Configuration{
 		ShortClientName: "Muriboistas",
 		ClientVersion:   "1.0",
 		RootNumber:      "",
+		SendBDelay:      180,
 	},
 	Qrcode: Qrcode{
 		FileName:    pathFromProjectRoot("session"),

@@ -2,6 +2,7 @@ package whats
 
 import (
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/muriboistas/zapzap/commands"
@@ -13,6 +14,7 @@ import (
 
 var startedAt = time.Now()
 var setted bool
+var lock sync.Mutex
 
 type waHandler struct {
 	c *whatsapp.Conn
@@ -33,7 +35,9 @@ func (*waHandler) HandleTextMessage(msg whatsapp.TextMessage) {
 	remoteIdentifier := message.GetRemoteIdentifier(msg.Info.RemoteJid)
 	switch remoteIdentifier {
 	case message.BroadcastMessage:
+		lock.Lock()
 		broadcast.Active[message.GetRemoteHost(msg.Info.RemoteJid)] = msg.Info.RemoteJid
+		lock.Unlock()
 	}
 }
 

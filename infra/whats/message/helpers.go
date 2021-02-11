@@ -22,6 +22,11 @@ const (
 	ContactMessage = "c.us"
 )
 
+// ValidateRemoteJID ...
+func ValidateRemoteJID(remoteJID string) bool {
+	return remoteJid.MatchString(remoteJID)
+}
+
 // GetRemoteJID get it
 func GetRemoteJID(msg whatsapp.TextMessage) string {
 	return msg.Info.RemoteJid
