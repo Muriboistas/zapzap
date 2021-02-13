@@ -7,9 +7,11 @@ import (
 
 	whatsapp "github.com/Rhymen/go-whatsapp"
 
-	"github.com/muriboistas/zapzap/config"
-	"github.com/muriboistas/zapzap/infra/whats/message"
+	cfg "github.com/muriboistas/zapzap/config"
+	message "github.com/muriboistas/zapzap/infra/whats/message"
 )
+
+var config = cfg.Get.Command
 
 // ActiveCommands the current avaliable commands
 var (
@@ -19,68 +21,37 @@ var (
 
 // Command all command data
 type Command struct {
-	Name string
-	Help string
+	ID          string
+	Name        string
+	Subcommands []string
+	Args        []string
+	Help        string
 
 	RootOnly bool
 
 	Cooldown time.Duration
 
-	Exec func(*whatsapp.Conn, whatsapp.TextMessage) error
-}
-
-// ParseCommand analyze the command
-// FIXME: add error definitions
-func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
-	config := config.Get.Command
-	// split the message by spaces
-	msgArgs := strings.Fields(msg.Text)
-	if len(msgArgs) < 1 {
-		return
-	}
-	commandName := strings.ToLower(strings.TrimPrefix(msgArgs[0], config.Prefix))
-
-	// verify if command exists
-	command, found := ActiveCommands[commandName]
-	if !found || commandName != command.Name {
-		return
-	}
-
-	// verify if the message sender have the permitions
-	if logs := HavePermitions(command, msg); len(logs) > 0 {
-		message.Reply(strings.Join(logs, "\n"), wac, msg)
-		return
-	}
-
-	// trim command from message
-	msg.Text = strings.TrimPrefix(msg.Text, msgArgs[0])
-	msg.Text = strings.TrimPrefix(msg.Text, " ")
-
-	err := command.Exec(wac, msg)
-	if err != nil {
-		message.Reply("👾: "+err.Error(), wac, msg)
-	}
-}
-
-// HavePermitions Check if the participant have the permitions to use some command
-func HavePermitions(command Command, msg whatsapp.TextMessage) (logs []string) {
-	if !isRoot(command, msg) {
-		logs = append(logs, "👾: Você não pode usar esse comando!")
-	}
-
-	if isInCooldown(command, msg) {
-		logs = append(logs, "👾: Você acabou de usar esse comando espere um pouco!")
-	}
-
-	return
+	Exec func(*whatsapp.Conn, whatsapp.TextMessage, map[string]string) error
 }
 
 // New creates a new command
-func New(name string, f func(*whatsapp.Conn, whatsapp.TextMessage) error) Command {
+func New(name string, f func(*whatsapp.Conn, whatsapp.TextMessage, map[string]string) error) Command {
 	return Command{
-		Name: name,
+		Name: strings.ToLower(name),
 		Exec: f,
 	}
+}
+
+// SetSubcommand set a sub command
+func (c Command) SetSubcommand(name string) Command {
+	c.Subcommands = append(c.Subcommands, strings.ToLower(name))
+	return c
+}
+
+// SetArgs set the command args
+func (c Command) SetArgs(args ...string) Command {
+	c.Args = args
+	return c
 }
 
 // SetHelp to the command
@@ -103,5 +74,96 @@ func (c Command) OnlyRoot() Command {
 
 // Add activate command
 func (c Command) Add() {
-	ActiveCommands[strings.ToLower(c.Name)] = c
+	c.ID = strings.TrimSuffix(fmt.Sprintf("%s-%s", c.Name, strings.Join(c.Subcommands, "-")), "-")
+	ActiveCommands[strings.ToLower(c.ID)] = c
+}
+
+// HavePermitions Check if the participant have the permitions to use some command
+func HavePermitions(command Command, msg whatsapp.TextMessage) (logs []string) {
+	if !isRoot(command, msg) {
+		logs = append(logs, "👾: You do not have permition tu use this!")
+	}
+
+	if isInCooldown(command, msg) {
+		logs = append(logs, "👾: Command in cooldown!")
+	}
+
+	return
+}
+
+func getCommandID(msg whatsapp.TextMessage) string {
+	message := strings.ToLower(strings.TrimPrefix(msg.Text, config.Prefix))
+	var commandID string
+	var subCommandsLen int
+	for k, v := range ActiveCommands {
+		command := strings.TrimSpace(fmt.Sprintf("%s %s", v.Name, strings.Join(v.Subcommands, " ")))
+		if !strings.HasPrefix(message, command) {
+			continue
+		}
+
+		if subCommandsLen > len(v.Subcommands) {
+			continue
+		}
+
+		subCommandsLen = len(v.Subcommands)
+		commandID = k
+	}
+
+	return commandID
+}
+
+func trimCommand(msg string, command Command) string {
+	msg = strings.TrimPrefix(msg, fmt.Sprintf("%s%s %s", config.Prefix, command.Name, strings.Join(command.Subcommands, " ")))
+	msg = strings.TrimPrefix(msg, " ")
+
+	return msg
+}
+
+func getCommandArgs(msg string, command Command) map[string]string {
+	args := make(map[string]string)
+	msgFields := strings.Fields(msg)
+
+	for k, argName := range command.Args {
+		// it will save the rest of fields in "..."
+		if k < len(msgFields) {
+			args[argName] = msgFields[k]
+		} else {
+			args[argName] = ""
+		}
+	}
+
+	args["..."] = strings.Join(msgFields[len(command.Args):], " ")
+
+	return args
+}
+
+// ParseCommand analyze the command
+// FIXME: add error definitions
+func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
+	commandID := getCommandID(msg)
+	if commandID == "" {
+		return
+	}
+
+	// verify if command exists
+	command, found := ActiveCommands[commandID]
+	if !found || commandID != command.ID {
+		return
+	}
+
+	// verify if the message sender have the permitions
+	if logs := HavePermitions(command, msg); len(logs) > 0 {
+		message.Reply(strings.Join(logs, "\n"), wac, msg)
+		return
+	}
+
+	// trim command from message
+	msg.Text = trimCommand(msg.Text, command)
+
+	args := getCommandArgs(msg.Text, command)
+
+	err := command.Exec(wac, msg, args)
+	if err != nil {
+		message.Reply("👾: "+err.Error(), wac, msg)
+	}
 }

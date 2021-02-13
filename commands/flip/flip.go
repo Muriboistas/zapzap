@@ -17,7 +17,7 @@ func init() {
 	commands.New("flip", flip).SetHelp("Flip a coin").SetCooldown(5).Add()
 }
 
-func flip(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func flip(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	var res string
 	x := rand.Intn(2)
 

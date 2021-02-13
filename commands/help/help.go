@@ -15,7 +15,7 @@ func init() {
 	commands.New("help", help).SetHelp("really?").Add()
 }
 
-func help(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func help(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	help := getHelpDescription(msg)
 	message.Reply(help, wac, msg)
 

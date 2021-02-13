@@ -12,7 +12,7 @@ func init() {
 	commands.New("ping", ping).SetHelp("check the command").SetCooldown(1).OnlyRoot().Add()
 }
 
-func ping(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func ping(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	message.Reply("Pong", wac, msg)
 
 	return nil

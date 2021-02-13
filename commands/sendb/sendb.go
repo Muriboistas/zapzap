@@ -16,7 +16,7 @@ func init() {
 	commands.New("sendb", sendb).SetHelp("send message to all broadcasts in the active broadcast list").SetCooldown(1).OnlyRoot().Add()
 }
 
-func sendb(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func sendb(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	if msg.Text == "" {
 		return errors.New("You can not send blank messages")
 	}

@@ -23,7 +23,7 @@ func init() {
 	commands.New("img", img).SetHelp("Find some image").SetCooldown(5).Add()
 }
 
-func img(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func img(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	c := colly.NewCollector()
 	var find bool
 	// Find and visit all links

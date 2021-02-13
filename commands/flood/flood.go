@@ -14,7 +14,7 @@ func init() {
 	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(8).Add()
 }
 
-func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	rand.Seed(time.Now().UnixNano())
 	times := rand.Intn(5)
 	message.Reply(msg.Text, wac, msg)

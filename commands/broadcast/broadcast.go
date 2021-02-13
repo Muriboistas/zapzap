@@ -16,7 +16,7 @@ func init() {
 	commands.New("broadcast", broadcast).SetHelp("for broadcast management").SetCooldown(1).OnlyRoot().Add()
 }
 
-func broadcast(wac *whatsapp.Conn, msg whatsapp.TextMessage) error {
+func broadcast(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
 	var res string
 	msgFields := strings.Fields(msg.Text)
 	operation := msgFields[0]
