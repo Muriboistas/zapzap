@@ -73,7 +73,7 @@ var conf = Configuration{
 		Quality:     "medium",
 		Size:        256,
 		GeneratePNG: true,
-		PrintOnCLI:  true,
+		PrintOnCLI:  false,
 	},
 	Database: Database{
 		Path:           pathFromProjectRoot("data"),
