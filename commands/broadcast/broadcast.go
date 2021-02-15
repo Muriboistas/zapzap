@@ -13,50 +13,31 @@ import (
 )
 
 func init() {
-	commands.New("broadcast", broadcast).SetHelp("for broadcast management").SetCooldown(1).OnlyRoot().Add()
+	commands.New(
+		"broadcast", broadcast,
+	).SetHelp(
+		"for broadcast management",
+	).SetCooldown(1).OnlyRoot().Add()
 }
 
 func broadcast(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	var res string
-	msgFields := strings.Fields(msg.Text)
-	operation := msgFields[0]
-	switch operation {
-	case "list":
-		res = formatBroadcastList()
-	case "deactivate":
-		broadcastID := msgFields[1]
-		res = mapFromTo(broadcastID, operation, bc.Active, bc.Deactivated)
-	case "activate":
-		broadcastID := msgFields[1]
-		res = mapFromTo(broadcastID, operation, bc.Deactivated, bc.Active)
-	default:
-		res = "Invalid operation"
+	list := []string{"Broadcasts"}
+	if len(bc.Active) > 0 {
+		list = append(list, "\nActive:")
+		for k := range bc.Active {
+			list = append(list, fmt.Sprintf("*ID:* %s", k))
+		}
 	}
+	if len(bc.Deactivated) > 0 {
+		list = append(list, "\nDeactivated:")
+		for k := range bc.Deactivated {
+			list = append(list, fmt.Sprintf("*ID:* %s", k))
+		}
+	}
+
+	res := strings.Join(list, "\n")
 
 	message.Reply(res, wac, msg)
 
 	return nil
-}
-
-func formatBroadcastList() string {
-	list := []string{"Broadcasts", "Activated:"}
-	for k := range bc.Active {
-		list = append(list, fmt.Sprintf("*ID:* %s", k))
-	}
-	list = append(list, "\nDeactivated:")
-	for k := range bc.Deactivated {
-		list = append(list, fmt.Sprintf("*ID:* %s", k))
-	}
-
-	return strings.Join(list, "\n")
-}
-
-func mapFromTo(broadcastID, operation string, from, to map[string]string) string {
-	v, found := from[broadcastID]
-	if !found {
-		return fmt.Sprintf("That broadcast doesn't exists in %sd list!", operation)
-	}
-	to[broadcastID] = v
-	delete(from, broadcastID)
-	return formatBroadcastList()
 }

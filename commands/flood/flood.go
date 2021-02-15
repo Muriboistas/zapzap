@@ -1,6 +1,7 @@
 package flood
 
 import (
+	"errors"
 	"math/rand"
 	"time"
 
@@ -11,15 +12,25 @@ import (
 )
 
 func init() {
-	commands.New("flood", flood).SetHelp("flood some message").SetCooldown(8).Add()
+	commands.New(
+		"flood", flood,
+	).SetArgs(
+		"...",
+	).SetHelp(
+		"flood some message",
+	).SetCooldown(8).Add()
 }
 
 func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
+	text := args["..."]
+	if text == "" {
+		return errors.New("You can not send blank messages")
+	}
 	rand.Seed(time.Now().UnixNano())
 	times := rand.Intn(5)
-	message.Reply(msg.Text, wac, msg)
+	message.Reply(text, wac, msg)
 	for i := 0; i <= times+7; i++ {
-		message.Send(msg.Text, wac, msg)
+		message.Send(text, wac, msg)
 	}
 
 	return nil

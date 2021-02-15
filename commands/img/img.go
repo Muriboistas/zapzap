@@ -15,15 +15,24 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-var (
-	errImgNotFound = errors.New("image not founded")
-)
+var errImgNotFound = errors.New("image not founded")
 
 func init() {
-	commands.New("img", img).SetHelp("Find some image").SetCooldown(5).Add()
+	commands.New(
+		"img", img,
+	).SetArgs(
+		"...",
+	).SetHelp(
+		"Find some image",
+	).SetCooldown(5).Add()
 }
 
 func img(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
+	text := args["..."]
+	if text == "" {
+		return errors.New("You can not search for a blank message")
+	}
+
 	c := colly.NewCollector()
 	var find bool
 	// Find and visit all links
@@ -50,7 +59,7 @@ func img(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) e
 
 	// Set url queries
 	v := url.Values{}
-	v.Set("q", msg.Text)
+	v.Set("q", text)
 
 	c.Visit(fmt.Sprintf("https://www.google.com/search?tbm=isch&%s", v.Encode()))
 

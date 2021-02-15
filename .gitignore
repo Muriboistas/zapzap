@@ -20,3 +20,4 @@ session
 config.json
 data/backups
 data/*.sqlite
+commands/ping/test.go

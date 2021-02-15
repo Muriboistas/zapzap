@@ -1,4 +1,4 @@
-package sendb
+package broadcast
 
 import (
 	"errors"
@@ -6,23 +6,34 @@ import (
 
 	"github.com/muriboistas/zapzap/commands"
 	"github.com/muriboistas/zapzap/config"
-	"github.com/muriboistas/zapzap/infra/whats/broadcast"
+	bc "github.com/muriboistas/zapzap/infra/whats/broadcast"
 	"github.com/muriboistas/zapzap/infra/whats/message"
 
 	whatsapp "github.com/Rhymen/go-whatsapp"
 )
 
 func init() {
-	commands.New("sendb", sendb).SetHelp("send message to all broadcasts in the active broadcast list").SetCooldown(1).OnlyRoot().Add()
+	commands.New(
+		"broadcast", sendBroadcast,
+	).SetSubcommands(
+		"send",
+	).SetArgs(
+		"...",
+	).SetAliases(
+		"bs",
+	).SetHelp(
+		"send message to all broadcasts in the active broadcast list",
+	).SetCooldown(1).OnlyRoot().Add()
 }
 
-func sendb(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	if msg.Text == "" {
+func sendBroadcast(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
+	text := args["..."]
+	if text == "" {
 		return errors.New("You can not send blank messages")
 	}
 
-	for _, remoteJid := range broadcast.Active {
-		err := message.SendTo(remoteJid, msg.Text, wac)
+	for _, remoteJid := range bc.Active {
+		err := message.SendTo(remoteJid, text, wac)
 		if err != nil {
 			message.Reply("Failed while sending to "+remoteJid, wac, msg)
 		} else {

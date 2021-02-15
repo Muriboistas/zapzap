@@ -9,7 +9,11 @@ import (
 )
 
 func init() {
-	commands.New("ping", ping).SetHelp("check the command").SetCooldown(1).OnlyRoot().Add()
+	commands.New(
+		"ping", ping,
+	).SetHelp(
+		"check the command",
+	).SetCooldown(1).OnlyRoot().Add()
 }
 
 func ping(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
