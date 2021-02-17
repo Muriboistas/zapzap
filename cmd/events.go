@@ -7,4 +7,5 @@ import (
 	_ "github.com/muriboistas/zapzap/commands/help"
 	_ "github.com/muriboistas/zapzap/commands/img"
 	_ "github.com/muriboistas/zapzap/commands/ping"
+	_ "github.com/muriboistas/zapzap/commands/superflood"
 )
