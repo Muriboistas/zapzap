@@ -84,13 +84,15 @@ func (c *Command) OnlyRoot() *Command {
 // Add activate command
 func (c *Command) Add() {
 	c.ID = makeCommandID(c)
-	ActiveCommands[strings.ToLower(c.ID)] = c
+	if !slicex.FoundString(config.Deactivate, c.ID) {
+		ActiveCommands[strings.ToLower(c.ID)] = c
+	}
 }
 
 // HavePermitions Check if the participant have the permitions to use some command
 func HavePermitions(command *Command, msg whatsapp.TextMessage) (logs []string) {
 	if !isRoot(command, msg) {
-		logs = append(logs, "👾: You do not have permition tu use this!")
+		logs = append(logs, "👾: You do not have permition to use this!")
 	}
 
 	return

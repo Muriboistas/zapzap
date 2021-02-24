@@ -13,9 +13,15 @@ import (
 // Get configs
 var Get = loadConfig()
 
+// App config
+type App struct {
+	Activated bool
+}
+
 // Command config
 type Command struct {
-	Prefix string
+	Prefix     string
+	Deactivate []string
 }
 
 // Whatsapp config
@@ -48,6 +54,7 @@ type Database struct {
 
 // Configuration data
 type Configuration struct {
+	App      App
 	Command  Command
 	Whatsapp Whatsapp
 	Qrcode   Qrcode
@@ -55,8 +62,12 @@ type Configuration struct {
 }
 
 var conf = Configuration{
+	App: App{
+		Activated: true,
+	},
 	Command: Command{
-		Prefix: ".",
+		Prefix:     ".",
+		Deactivate: []string{},
 	},
 	Whatsapp: Whatsapp{
 		TimeOutDuration: 5,
@@ -93,5 +104,10 @@ func loadConfig() Configuration {
 	if err := configor.New(settings).Load(&conf, configFile); err != nil {
 		log.Println(err)
 	}
+
+	if !conf.App.Activated {
+		log.Fatal("App desactivated!")
+	}
+
 	return conf
 }
