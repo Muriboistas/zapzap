@@ -84,9 +84,13 @@ var conf = Configuration{
 
 func loadConfig() Configuration {
 	configFile := "config/config.json"
+	settings := &configor.Config{
+		Silent:    true,
+		ENVPrefix: "SB",
+	}
 
 	os.TempDir()
-	if err := configor.Load(&conf, configFile); err != nil {
+	if err := configor.New(settings).Load(&conf, configFile); err != nil {
 		log.Println(err)
 	}
 	return conf
