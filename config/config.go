@@ -1,8 +1,7 @@
 package config
 
 import (
-	"path/filepath"
-	"runtime"
+	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -61,7 +60,7 @@ var conf = Configuration{
 	},
 	Whatsapp: Whatsapp{
 		TimeOutDuration: 5,
-		SessionPath:     pathFromProjectRoot("session"),
+		SessionPath:     "session",
 		LongClientName:  "Muriboistas",
 		ShortClientName: "Muriboistas",
 		ClientVersion:   "1.0",
@@ -69,30 +68,26 @@ var conf = Configuration{
 		SendBDelay:      180,
 	},
 	Qrcode: Qrcode{
-		FileName:    pathFromProjectRoot("session"),
+		FileName:    "session",
 		Quality:     "medium",
 		Size:        256,
 		GeneratePNG: true,
 		PrintOnCLI:  false,
 	},
 	Database: Database{
-		Path:           pathFromProjectRoot("data"),
+		Path:           "data",
 		SaveBackup:     true,
-		BackupPath:     pathFromProjectRoot("data/backups"),
-		MigrationsPath: pathFromProjectRoot("data/migrations"),
+		BackupPath:     "data/backups",
+		MigrationsPath: "data/migrations",
 	},
 }
 
 func loadConfig() Configuration {
-	if err := configor.Load(&conf, pathFromProjectRoot("config/config.json")); err != nil {
+	configFile := "config/config.json"
+
+	os.TempDir()
+	if err := configor.Load(&conf, configFile); err != nil {
 		log.Println(err)
 	}
 	return conf
-}
-
-func pathFromProjectRoot(path string) string {
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(b)
-
-	return filepath.Join(basepath, "..", path)
 }
