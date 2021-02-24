@@ -21,14 +21,14 @@ func init() {
 	commands.New(
 		"img", img,
 	).SetArgs(
-		"...",
+		"text",
 	).SetHelp(
 		"Find some image",
 	).SetCooldown(5).Add()
 }
 
 func img(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	text := args["..."]
+	text := args["text"]
 	if text == "" {
 		return errors.New("You can not search for a blank message")
 	}
