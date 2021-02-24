@@ -18,7 +18,7 @@ func init() {
 	).SetSubcommands(
 		"send",
 	).SetArgs(
-		"...",
+		"text",
 	).SetAliases(
 		"bs",
 	).SetHelp(
@@ -27,7 +27,7 @@ func init() {
 }
 
 func sendBroadcast(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	text := args["..."]
+	text := args["text"]
 	if text == "" {
 		return errors.New("You can not send blank messages")
 	}

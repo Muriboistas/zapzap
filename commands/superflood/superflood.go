@@ -13,14 +13,14 @@ func init() {
 	commands.New(
 		"superflood", superflood,
 	).SetArgs(
-		"...",
+		"text",
 	).SetHelp(
 		"flood some message 150 or more times",
 	).SetCooldown(1).OnlyRoot().Add()
 }
 
 func superflood(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	text := args["..."]
+	text := args["text"]
 	if text == "" {
 		return errors.New("You can not send blank messages")
 	}

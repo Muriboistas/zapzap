@@ -15,14 +15,14 @@ func init() {
 	commands.New(
 		"flood", flood,
 	).SetArgs(
-		"...",
+		"text",
 	).SetHelp(
 		"flood some message",
 	).SetCooldown(8).Add()
 }
 
 func flood(wac *whatsapp.Conn, msg whatsapp.TextMessage, args map[string]string) error {
-	text := args["..."]
+	text := args["text"]
 	if text == "" {
 		return errors.New("You can not send blank messages")
 	}

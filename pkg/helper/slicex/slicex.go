@@ -12,3 +12,13 @@ func Unique(intSlice []string) []string {
 	}
 	return list
 }
+
+// FoundString run a slice to found a value
+func FoundString(slice []string, value string) bool {
+	for _, v := range slice {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}

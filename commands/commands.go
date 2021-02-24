@@ -11,6 +11,7 @@ import (
 	cfg "github.com/muriboistas/zapzap/config"
 	message "github.com/muriboistas/zapzap/infra/whats/message"
 	"github.com/muriboistas/zapzap/pkg/helper/slicex"
+	"github.com/muriboistas/zapzap/pkg/helper/stringx"
 )
 
 var config = cfg.Get.Command
@@ -84,13 +85,15 @@ func (c *Command) OnlyRoot() *Command {
 // Add activate command
 func (c *Command) Add() {
 	c.ID = makeCommandID(c)
-	ActiveCommands[strings.ToLower(c.ID)] = c
+	if !slicex.FoundString(config.Deactivate, c.ID) {
+		ActiveCommands[strings.ToLower(c.ID)] = c
+	}
 }
 
 // HavePermitions Check if the participant have the permitions to use some command
 func HavePermitions(command *Command, msg whatsapp.TextMessage) (logs []string) {
 	if !isRoot(command, msg) {
-		logs = append(logs, "👾: You do not have permition tu use this!")
+		logs = append(logs, "👾: You do not have permition to use this!")
 	}
 
 	return
@@ -123,26 +126,28 @@ func makeCommandID(command *Command) string {
 }
 
 func trimCommand(msg string, command *Command) string {
-	msgList := strings.Fields(msg)
+	msgList := strings.Split(msg, " ")
 	msg = strings.Join(msgList[1:], " ")
 
 	return msg
 }
 
-func getCommandArgs(msg string, command *Command) map[string]string {
+func getCommandArgs(msg string, command *Command) (map[string]string, error) {
 	args := make(map[string]string)
-	msgFields := strings.Fields(msg)
+	msgArgs := stringx.ToArgs(msg)
+
+	if len(msgArgs) > len(command.Args) {
+		return nil, errors.New("You put more arguments than necessary, check the command again")
+	}
+
 	for k, argName := range command.Args {
-		if argName == "..." && args["..."] == "" {
-			args["..."] = strings.Join(msgFields[len(command.Args)-1:], " ")
-		} else if k < len(msgFields) {
-			args[argName] = msgFields[k]
+		if k < len(msgArgs) {
+			args[argName] = msgArgs[k]
 		} else {
 			args[argName] = ""
 		}
 	}
-
-	return args
+	return args, nil
 }
 
 func checkCooldown(command *Command, msg whatsapp.TextMessage) error {
@@ -193,9 +198,13 @@ func ParseCommand(wac *whatsapp.Conn, msg whatsapp.TextMessage) {
 
 	// trim command from message
 	argsStr := trimCommand(msg.Text, command)
-	args := getCommandArgs(argsStr, command)
+	args, err := getCommandArgs(argsStr, command)
+	if err != nil {
+		message.Reply("👾: "+err.Error(), wac, msg)
+		return
+	}
 
-	err := command.Exec(wac, msg, args)
+	err = command.Exec(wac, msg, args)
 	if err != nil {
 		message.Reply("👾: "+err.Error(), wac, msg)
 	}
